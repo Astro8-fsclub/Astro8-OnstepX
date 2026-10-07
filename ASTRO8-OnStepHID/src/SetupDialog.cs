@@ -30,8 +30,7 @@ namespace ASTRO8_OnStepHID
         private TextBox _lonBox, _latBox, _utcBox, _timeBox, _dateBox;
         private string _timeOriginal, _dateOriginal;
 
-        // 限制
-        private TextBox _raMinBox, _raMaxBox, _decMinBox, _decMaxBox;
+        // 限制（仅硬件：地平/天顶/子午线）
         private TextBox _horizonBox, _overheadBox, _eastMerBox, _westMerBox;
 
         // 速度
@@ -55,7 +54,7 @@ namespace ASTRO8_OnStepHID
             MaximizeBox = false;
             MinimizeBox = false;
             StartPosition = FormStartPosition.CenterParent;
-            ClientSize = new Size(800, 785);
+            ClientSize = new Size(800, 712);
 
             // ===== 连接方式 / Connection =====
             var connBox = new GroupBox { Text = "连接方式 / Connection", Left = 10, Top = 8, Width = 780, Height = 126 };
@@ -117,45 +116,31 @@ namespace ASTRO8_OnStepHID
             };
             siteBox.Controls.AddRange(new Control[] { lonLabel, _lonBox, latLabel, _latBox, utcLabel, _utcBox, timeLabel, _timeBox, dateLabel, _dateBox, siteHint });
 
-            // ===== 限制 / Limits =====
-            var limBox = new GroupBox { Text = "限制 / Limits", Left = 10, Top = 418, Width = 780, Height = 232 };
-            var gotoTitle = new Label
-            {
-                Text = "驱动侧 GOTO 软限制（超限拒绝 GOTO）\r\nDriver-side GOTO soft limits (reject outside range)",
-                Left = 15, Top = 16, Width = 750, Height = 34, AutoSize = false,
-                Font = new Font(Font, FontStyle.Bold), ForeColor = Color.FromArgb(60, 80, 100)
-            };
-            var raMinLabel = new Label { Text = "RA 最小\nmin(h)", Left = 30, Top = 52, Width = 110, Height = 30, AutoSize = false };
-            _raMinBox = new TextBox { Left = 145, Top = 56, Width = 75 };
-            var raMaxLabel = new Label { Text = "RA 最大\nmax(h)", Left = 260, Top = 52, Width = 110, Height = 30, AutoSize = false };
-            _raMaxBox = new TextBox { Left = 375, Top = 56, Width = 75 };
-            var decMinLabel = new Label { Text = "Dec 最小\nmin(°)", Left = 30, Top = 86, Width = 110, Height = 30, AutoSize = false };
-            _decMinBox = new TextBox { Left = 145, Top = 90, Width = 75 };
-            var decMaxLabel = new Label { Text = "Dec 最大\nmax(°)", Left = 260, Top = 86, Width = 110, Height = 30, AutoSize = false };
-            _decMaxBox = new TextBox { Left = 375, Top = 90, Width = 75 };
+            // ===== 限制 / Limits（仅硬件限制，回读/写入 OnStep；驱动侧不再设 RA/Dec 软限制） =====
+            var limBox = new GroupBox { Text = "限制 / Limits", Left = 10, Top = 418, Width = 780, Height = 150 };
             var hwTitle = new Label
             {
                 Text = "硬件限制（回读/写入 OnStep）\r\nHardware limits (read/write OnStep)",
-                Left = 15, Top = 120, Width = 750, Height = 34, AutoSize = false,
+                Left = 15, Top = 16, Width = 750, Height = 34, AutoSize = false,
                 Font = new Font(Font, FontStyle.Bold), ForeColor = Color.FromArgb(60, 80, 100)
             };
-            var hzLabel = new Label { Text = "地平\nHorizon°", Left = 30, Top = 156, Width = 100, Height = 30, AutoSize = false };
-            _horizonBox = new TextBox { Left = 135, Top = 160, Width = 75 };
-            var ovLabel = new Label { Text = "天顶\nOverhead°", Left = 245, Top = 156, Width = 110, Height = 30, AutoSize = false };
-            _overheadBox = new TextBox { Left = 355, Top = 160, Width = 75 };
-            var esLabel = new Label { Text = "东子午线\nE.Mer(min)", Left = 475, Top = 156, Width = 135, Height = 30, AutoSize = false };
-            _eastMerBox = new TextBox { Left = 615, Top = 160, Width = 75 };
-            var wsLabel = new Label { Text = "西子午线\nW.Mer(min)", Left = 30, Top = 190, Width = 135, Height = 30, AutoSize = false };
-            _westMerBox = new TextBox { Left = 170, Top = 194, Width = 75 };
+            var hzLabel = new Label { Text = "地平\nHorizon°", Left = 30, Top = 52, Width = 100, Height = 30, AutoSize = false };
+            _horizonBox = new TextBox { Left = 135, Top = 56, Width = 75 };
+            var ovLabel = new Label { Text = "天顶\nOverhead°", Left = 245, Top = 52, Width = 110, Height = 30, AutoSize = false };
+            _overheadBox = new TextBox { Left = 355, Top = 56, Width = 75 };
+            var esLabel = new Label { Text = "东子午线\nE.Mer(min)", Left = 475, Top = 52, Width = 135, Height = 30, AutoSize = false };
+            _eastMerBox = new TextBox { Left = 615, Top = 56, Width = 75 };
+            var wsLabel = new Label { Text = "西子午线\nW.Mer(min)", Left = 30, Top = 86, Width = 135, Height = 30, AutoSize = false };
+            _westMerBox = new TextBox { Left = 170, Top = 90, Width = 75 };
             var limHint = new Label
             {
-                Text = "GEM: 东/西子午线=RA 范围; Dec=Axis2\r\nE/W meridian = RA range; Dec = Axis2",
-                Left = 310, Top = 190, Width = 460, Height = 38, AutoSize = false, ForeColor = Color.Gray
+                Text = "GEM: 东/西子午线=RA 范围; Dec 由 OnStep 限位控制\r\nE/W meridian = RA range; Dec governed by OnStep limits",
+                Left = 310, Top = 86, Width = 460, Height = 38, AutoSize = false, ForeColor = Color.Gray
             };
-            limBox.Controls.AddRange(new Control[] { gotoTitle, raMinLabel, _raMinBox, raMaxLabel, _raMaxBox, decMinLabel, _decMinBox, decMaxLabel, _decMaxBox, hwTitle, hzLabel, _horizonBox, ovLabel, _overheadBox, esLabel, _eastMerBox, wsLabel, _westMerBox, limHint });
+            limBox.Controls.AddRange(new Control[] { hwTitle, hzLabel, _horizonBox, ovLabel, _overheadBox, esLabel, _eastMerBox, wsLabel, _westMerBox, limHint });
 
             // ===== 速度 / Speed =====
-            var spdBox = new GroupBox { Text = "速度 / Speed", Left = 10, Top = 656, Width = 780, Height = 78 };
+            var spdBox = new GroupBox { Text = "速度 / Speed", Left = 10, Top = 576, Width = 780, Height = 72 };
             var spdLabel = new Label { Text = "当前 GOTO 速度\nCurrent speed", Left = 15, Top = 10, Width = 150, Height = 30, AutoSize = false };
             _slewSpeedLabel = new Label { Left = 170, Top = 10, Width = 120, Height = 30, AutoSize = false, ForeColor = Color.Gray, Text = "(未回读)\n(not read)" };
             var presetLabel = new Label { Text = "移动速率档\nMove rate", Left = 320, Top = 10, Width = 120, Height = 30, AutoSize = false };
@@ -167,10 +152,10 @@ namespace ASTRO8_OnStepHID
             spdBox.Controls.AddRange(new Control[] { spdLabel, _slewSpeedLabel, presetLabel, _slewPresetCombo, trackLabel, _trackRateCombo });
 
             // ===== 底部按钮 / Bottom buttons =====
-            _readBtn = new Button { Text = "回读硬件设置\nRead hardware", Left = 10, Top = 742, Width = 240, Height = 38 };
+            _readBtn = new Button { Text = "回读硬件设置\nRead hardware", Left = 10, Top = 656, Width = 300, Height = 48 };
             _readBtn.Click += (s, e) => ReadHardwareSettings();
-            _okBtn = new Button { Text = "确定\nOK", Left = 570, Top = 742, Width = 100, Height = 38, DialogResult = DialogResult.OK };
-            _cancelBtn = new Button { Text = "取消\nCancel", Left = 680, Top = 742, Width = 100, Height = 38, DialogResult = DialogResult.Cancel };
+            _okBtn = new Button { Text = "确定\nOK", Left = 560, Top = 656, Width = 120, Height = 48, DialogResult = DialogResult.OK };
+            _cancelBtn = new Button { Text = "取消\nCancel", Left = 680, Top = 656, Width = 120, Height = 48, DialogResult = DialogResult.Cancel };
             _okBtn.Click += (s, e) => Save();
 
             Controls.AddRange(new Control[] { connBox, _testBtn, _resultLabel, siteBox, limBox, spdBox, _readBtn, _okBtn, _cancelBtn });
@@ -195,10 +180,6 @@ namespace ASTRO8_OnStepHID
             else
                 _utcBox.Text = FormatUtcOffset(utcMin);
 
-            _raMinBox.Text = DriverSettings.GetDouble(DriverSettings.KRaMinHours, 0.0).ToString("0.##", CultureInfo.InvariantCulture);
-            _raMaxBox.Text = DriverSettings.GetDouble(DriverSettings.KRaMaxHours, 24.0).ToString("0.##", CultureInfo.InvariantCulture);
-            _decMinBox.Text = DriverSettings.GetDouble(DriverSettings.KDecMinDeg, -90.0).ToString("0.##", CultureInfo.InvariantCulture);
-            _decMaxBox.Text = DriverSettings.GetDouble(DriverSettings.KDecMaxDeg, 90.0).ToString("0.##", CultureInfo.InvariantCulture);
             _horizonBox.Text = DriverSettings.GetInt(DriverSettings.KHorizonLimit, -1).ToString();
             _overheadBox.Text = DriverSettings.GetInt(DriverSettings.KOverheadLimit, -1).ToString();
             _eastMerBox.Text = DriverSettings.GetInt(DriverSettings.KEastMeridianMin, -1).ToString();
@@ -367,11 +348,16 @@ namespace ASTRO8_OnStepHID
                     SetIfOk(() => _eastMerBox.Text = proto.GetEastMeridianLimitMinutes().ToString(), ref ok, ref fail);
                     SetIfOk(() => _westMerBox.Text = proto.GetWestMeridianLimitMinutes().ToString(), ref ok, ref fail);
 
-                    // Dec 软限制默认 = Axis2 限位（度）；Axis1(RA) 限位无对应软限制字段，仅在提示中展示
-                    SetIfOk(() => _decMinBox.Text = proto.GetAxis2MinLimitDeg().ToString(), ref ok, ref fail);
-                    SetIfOk(() => _decMaxBox.Text = proto.GetAxis2MaxLimitDeg().ToString(), ref ok, ref fail);
-                    string axis1Ref = "";
-                    try { axis1Ref = string.Format("Axis1(RA) 轴限位: min {0}° / max {1}h  |  Axis1(RA) limits: min {0}° / max {1}h", proto.GetAxis1MinLimitDeg(), proto.GetAxis1MaxLimitHours().ToString("0.#", CultureInfo.InvariantCulture)); } catch { }
+                    string axisRef = "";
+                    try
+                    {
+                        axisRef = string.Format(
+                            "Axis1(RA) 轴限位: min {0}° / max {1}h  |  Axis2(Dec) 限位: {2}°..{3}°\r\nAxis1(RA) limits: min {0}° / max {1}h  |  Axis2(Dec) limits: {2}°..{3}°",
+                            proto.GetAxis1MinLimitDeg(),
+                            proto.GetAxis1MaxLimitHours().ToString("0.#", CultureInfo.InvariantCulture),
+                            proto.GetAxis2MinLimitDeg(), proto.GetAxis2MaxLimitDeg());
+                    }
+                    catch { }
 
                     // 速度
                     SetIfOk(() => _slewSpeedLabel.Text = proto.GetSlewSpeedDegPerSec().ToString("0.00", CultureInfo.InvariantCulture) + " deg/s", ref ok, ref fail);
@@ -386,7 +372,7 @@ namespace ASTRO8_OnStepHID
                         "Read-back done: {0} OK, {1} failed. {3}{4}",
                         ok, fail, info,
                         Environment.NewLine + "可修改后点“确定 / OK”保存（连接时自动下发）。 / Edit then click OK; applied on connect.",
-                        axis1Ref.Length > 0 ? Environment.NewLine + axis1Ref : "");
+                        axisRef.Length > 0 ? Environment.NewLine + axisRef : "");
                 }
             }
             catch (Exception ex)
@@ -409,15 +395,11 @@ namespace ASTRO8_OnStepHID
         private void Save()
         {
             string err = "";
-            double lon, lat, raMin, raMax, decMin, decMax;
+            double lon, lat;
             int utcMin, horizon, overhead, east, west;
             if (!TryParseD(_lonBox.Text, out lon)) err += "经度无效 / invalid longitude; ";
             if (!TryParseD(_latBox.Text, out lat)) err += "纬度无效 / invalid latitude; ";
             if (!TryParseUtcOffset(_utcBox.Text, out utcMin)) err += "UTC offset 无效（如 +08:00）/ invalid (e.g. +08:00); ";
-            if (!TryParseD(_raMinBox.Text, out raMin) || raMin < 0 || raMin > 24) err += "RA 最小无效(0-24) / RA min invalid (0-24); ";
-            if (!TryParseD(_raMaxBox.Text, out raMax) || raMax < 0 || raMax > 24) err += "RA 最大无效(0-24) / RA max invalid (0-24); ";
-            if (!TryParseD(_decMinBox.Text, out decMin) || decMin < -90 || decMin > 90) err += "Dec 最小无效(-90..90) / Dec min invalid (-90..90); ";
-            if (!TryParseD(_decMaxBox.Text, out decMax) || decMax < -90 || decMax > 90) err += "Dec 最大无效(-90..90) / Dec max invalid (-90..90); ";
             if (!int.TryParse(_horizonBox.Text, out horizon)) err += "地平限制无效 / invalid horizon; ";
             if (!int.TryParse(_overheadBox.Text, out overhead)) err += "天顶限制无效 / invalid overhead; ";
             if (!int.TryParse(_eastMerBox.Text, out east)) err += "东子午线无效 / invalid E.meridian; ";
@@ -443,10 +425,6 @@ namespace ASTRO8_OnStepHID
             DriverSettings.SetDouble(DriverSettings.KLongitude, lon);
             DriverSettings.SetDouble(DriverSettings.KLatitude, lat);
             DriverSettings.SetInt(DriverSettings.KUtcOffsetMin, utcMin);
-            DriverSettings.SetDouble(DriverSettings.KRaMinHours, raMin);
-            DriverSettings.SetDouble(DriverSettings.KRaMaxHours, raMax);
-            DriverSettings.SetDouble(DriverSettings.KDecMinDeg, decMin);
-            DriverSettings.SetDouble(DriverSettings.KDecMaxDeg, decMax);
             DriverSettings.SetInt(DriverSettings.KHorizonLimit, horizon);
             DriverSettings.SetInt(DriverSettings.KOverheadLimit, overhead);
             DriverSettings.SetInt(DriverSettings.KEastMeridianMin, east);

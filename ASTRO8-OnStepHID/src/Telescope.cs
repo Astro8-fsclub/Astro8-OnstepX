@@ -415,33 +415,9 @@ namespace ASTRO8_OnStepHID
 
         // ================= GOTO / 同步 =================
 
-        /// <summary>
-        /// 驱动侧 RA/Dec GOTO 软限制校验（属性页设置；默认 0-24h / -90..+90° 即不限制）。
-        /// 超出范围抛 InvalidValueException，拒绝 GOTO。
-        /// </summary>
-        private static void CheckRaDecLimits(double ra, double dec)
-        {
-            double raMin = DriverSettings.GetDouble(DriverSettings.KRaMinHours, 0.0);
-            double raMax = DriverSettings.GetDouble(DriverSettings.KRaMaxHours, 24.0);
-            double decMin = DriverSettings.GetDouble(DriverSettings.KDecMinDeg, -90.0);
-            double decMax = DriverSettings.GetDouble(DriverSettings.KDecMaxDeg, 90.0);
-
-            double r = ra % 24.0;
-            if (r < 0) r += 24.0;
-            if (r < raMin - 1e-9 || r > raMax + 1e-9)
-                throw new ASCOM.InvalidValueException(string.Format(
-                    "目标 RA {0:F3}h 超出驱动设置的 GOTO 限制（{1:F2}..{2:F2}h）。请在驱动属性页调整 RA 限制。",
-                    r, raMin, raMax));
-            if (dec < decMin - 1e-9 || dec > decMax + 1e-9)
-                throw new ASCOM.InvalidValueException(string.Format(
-                    "目标 Dec {0:F3}° 超出驱动设置的 GOTO 限制（{1:F2}..{2:F2}°）。请在驱动属性页调整 Dec 限制。",
-                    dec, decMin, decMax));
-        }
-
         public void SlewToCoordinates(double RightAscension, double Declination)
         {
             EnsureConnected();
-            CheckRaDecLimits(RightAscension, Declination);
             lock (_state)
             {
                 _protocol.SetTargetRa(RightAscension);
@@ -465,7 +441,6 @@ namespace ASTRO8_OnStepHID
         public void SlewToTarget()
         {
             EnsureConnected();
-            CheckRaDecLimits(_protocol.GetTargetRa(), _protocol.GetTargetDec());
             lock (_state)
             {
                 _protocol.GotoEquatorial();

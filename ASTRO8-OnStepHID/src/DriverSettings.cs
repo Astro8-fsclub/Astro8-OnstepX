@@ -34,10 +34,6 @@ namespace ASTRO8_OnStepHID
         public const string KLatitude = "Latitude";
         public const string KLongitude = "Longitude";
         public const string KUtcOffsetMin = "UtcOffsetMinutes";
-        public const string KRaMinHours = "RaMinHours";
-        public const string KRaMaxHours = "RaMaxHours";
-        public const string KDecMinDeg = "DecMinDeg";
-        public const string KDecMaxDeg = "DecMaxDeg";
         public const string KHorizonLimit = "HorizonLimit";
         public const string KOverheadLimit = "OverheadLimit";
         public const string KEastMeridianMin = "EastMeridianMin";

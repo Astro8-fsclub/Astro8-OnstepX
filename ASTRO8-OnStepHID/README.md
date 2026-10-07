@@ -12,10 +12,11 @@ project is kept untouched for testing**. This project registers independently
 (different ProgId, so both can coexist). In addition to the original HID
 connection, a **WiFi (TCP) connection** is added (default `192.168.0.1:9998`,
 styled after the original ASCOM serial driver). The driver Setup dialog provides
-full manual settings: **longitude, latitude, UTC offset, time, date, RA/Dec
-limits, horizon/overhead/meridian limits, current slew speed, tracking rate** —
+full manual settings: **longitude, latitude, UTC offset, time, date,
+horizon/overhead/meridian limits, current slew speed, tracking rate** —
 all fields **default to reading back the hardware (OnStep) current settings and
-can be edited manually**; they are applied automatically on connect.
+can be edited manually**; they are applied automatically on connect. No driver-side
+RA/Dec soft limits (GOTO is protected by OnStep's own axis limits).
 
 ---
 
@@ -29,7 +30,7 @@ can be edited manually**; they are applied automatically on connect.
 | 连接方式 | 仅 HID | **HID + WiFi(TCP)** |
 | 属性页 | 仅 VID/PID/序列号 | VID/PID/序列号 + 地址/端口 + **站点/时间/限制/速度 全字段** |
 | 回读硬件设置 | 无 | **"回读硬件设置"按钮**（一次性连接回读全部可读项） |
-| GOTO 限制 | 无 | 驱动侧 RA/Dec 软限制（超限拒绝 GOTO） |
+| GOTO 限制 | 无 | 无（GOTO 由 OnStep 自身轴限位保护，驱动不设软限制） |
 | 注册 | 已注册 | 已注册（两者可共存，Chooser 中显示带 " (HID/WiFi)" 后缀） |
 
 ### 2. 连接方式
@@ -67,15 +68,13 @@ can be edited manually**; they are applied automatically on connect.
 
 | 分组 | 字段 | 默认 | 说明 |
 |---|---|---|---|
-| 驱动 GOTO 软限制 | RA 最小/最大 (h) | 0 / 24 | 超限拒绝 GOTO（SlewTo 抛异常） |
-| 驱动 GOTO 软限制 | Dec 最小/最大 (°) | 回读 Axis2 限位 / +90 | 同上 |
 | 硬件限制（可写） | 地平 (°) | 回读 | `:ShsDD#` |
 | 硬件限制（可写） | 天顶 (°) | 回读 | `:SoDD#` |
 | 硬件限制（可写） | 东子午线 (min) | 回读 | `:SXE9,n#`，GEM 上即 RA 方向限制 |
 | 硬件限制（可写） | 西子午线 (min) | 回读 | `:SXEA,n#` |
 
 - 硬件限制回读命令：`:Gh#` `:Go#` `:GXE9#` `:GXEA#`；
-- Axis1(RA) 轴限位（`:GXEe#` min° / `:GXEB#` max h）回读后仅作参考展示（OnStep 不支持运行时写入轴限位）。
+- Axis1(RA) 轴限位（`:GXEe#` min° / `:GXEB#` max h）、Axis2(Dec) 限位（`:GXEC#`/`:GXED#` deg）回读后仅作参考展示（OnStep 不支持运行时写入轴限位；驱动侧不再设 RA/Dec 软限制，GOTO 由 OnStep 自身限位保护）。
 
 #### 速度
 
@@ -125,7 +124,7 @@ ASTRO8-OnStepHID/
 │   ├── WifiTransport.cs     # TCP 传输（默认 192.168.0.1:9998）
 │   ├── OnStepProtocol.cs    # OnStep/LX200 命令编解码（含 UTC offset/限制/速率）
 │   ├── SetupDialog.cs       # 属性页（连接方式 + 站点/时间/限制/速度 + 回读）
-│   ├── Telescope.cs         # ITelescopeV3/V4 实现（双连接 + GOTO 软限制）
+│   ├── Telescope.cs         # ITelescopeV3/V4 实现（双连接；GOTO 由 OnStep 限位保护）
 │   ├── DriverSettings.cs    # Profile 存储 + Chooser 注册
 │   └── TrackingRates.cs
 └── tester/
@@ -137,10 +136,9 @@ ASTRO8-OnStepHID/
 - 本工程未做真机联调（无 OnStep WiFi 与硬件现场）；HID 链路与 Rp2040HID 固件
   的兼容性已由原 OnStepHID 验证，WiFi 链路请用 `wtest` 先确认模块是原始 TCP 转发
   （部分模块默认 HTTP，需要切换模式或改端口）。
-- 驱动侧 RA/Dec 软限制默认 0-24h / -90..+90°（不拦截）；在属性页改窄后，
-  GOTO（SlewToCoordinates/SlewToTarget）超出范围会拒绝并给出提示。
+- 驱动侧不设 RA/Dec 软限制（与原版一致）：GOTO 由 OnStep 自身轴限位保护。
 - OnStep 的 Axis1(RA)/Axis2(Dec) 轴限位仅在固件编译时配置，运行时可读不可写；
-  因此"赤经限制"用可写的东/西子午线限制表达，"赤纬限制"为驱动侧软限制 + Axis2 限位参考。
+  因此"赤经方向限制"用可写的东/西子午线限制表达，"赤纬"以 Axis2 限位为参考。
 
 ---
 
@@ -154,7 +152,7 @@ ASTRO8-OnStepHID/
 | Connection | HID only | **HID + WiFi(TCP)** |
 | Setup page | VID/PID/serial only | VID/PID/serial + host/port + **site/time/limits/speed fields** |
 | Hardware read-back | none | **"Read hardware settings" button** (one-shot connect, reads all readable items) |
-| GOTO limits | none | Driver-side RA/Dec soft limits (GOTO rejected outside range) |
+| GOTO limits | none | none (GOTO is protected by OnStep's own axis limits; no driver soft limits) |
 | Registration | registered | registered (coexists with the old one; Chooser shows " (HID/WiFi)" suffix) |
 
 ### 2. Connection methods
@@ -269,10 +267,9 @@ ASTRO8-OnStepHID/
   firmware by the original OnStepHID driver; for the WiFi path, first confirm
   with `wtest` that the module is raw TCP forwarding (some modules default to
   HTTP and need a mode switch or a different port).
-- The driver-side RA/Dec soft limits default to 0-24 h / -90..+90° (no blocking);
-  once narrowed in the properties page, GOTO (SlewToCoordinates/SlewToTarget)
-  outside the range is rejected with a clear message.
+- The driver has **no driver-side RA/Dec soft limits** (same as the original
+  driver): GOTO is protected by OnStep's own axis limits.
 - OnStep Axis1(RA)/Axis2(Dec) axis limits are compile-time configuration and are
-  readable but not writable at runtime. Therefore "RA limit" is expressed by the
-  writable east/west meridian limits, and "Dec limit" is the driver-side soft
-  limit plus the Axis2 limit reference.
+  readable but not writable at runtime. Therefore the "RA-direction range" is
+  expressed by the writable east/west meridian limits, and "Dec" references the
+  Axis2 limit.
