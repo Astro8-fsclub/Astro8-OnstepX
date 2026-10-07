@@ -16,7 +16,9 @@ namespace ASTRO8_OnStepHID
     [ComVisible(true)]
     [Guid("74EDFF70-B739-4A59-9842-0DD94C305018")]
     [ProgId(DriverSettings.ProgId)]
-    [ClassInterface(ClassInterfaceType.None)]
+    // AutoDual：把类公共成员（含 GetEnumerator，即 IDispatch DISPID_NEWENUM）暴露给 late-binding
+    // 客户端（NINA/ASCOM.DriverAccess 通过 IDispatch 枚举驱动对象；ClassInterface.None 会 E_NOINTERFACE）。
+    [ClassInterface(ClassInterfaceType.AutoDual)]
     public class Telescope : ITelescopeV3, ITelescopeV4, System.Collections.IEnumerable, IDisposable
     {
         private readonly object _state = new object();
