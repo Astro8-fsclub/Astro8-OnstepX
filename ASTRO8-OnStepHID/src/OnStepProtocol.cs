@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace OnStepAstro8
+namespace ASTRO8_OnStepHID
 {
     /// <summary>
     /// OnStep / OnStepX（LX200 兼容协议）命令编解码。

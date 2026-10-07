@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ASCOM.DeviceInterface;
 
-namespace OnStepAstro8
+namespace ASTRO8_OnStepHID
 {
     /// <summary>
-    /// 驱动属性设置对话框（ASCOM SetupDialog）：
+    /// 驱动属性设置对话框（ASCOM SetupDialog），界面中英双语：
     /// 1. 连接方式：HID（VID/PID/序列号，精确匹配）或 WiFi（地址/端口，默认 192.168.0.1:9998）；
     /// 2. 站点与时间：经度、纬度、UTC offset、本地时间、本地日期（默认回读硬件当前设置，可手动修改）；
     /// 3. 限制：驱动侧 RA/Dec GOTO 软限制 + 硬件地平/天顶/子午线限制（回读/写入）；
@@ -49,101 +49,127 @@ namespace OnStepAstro8
             string host = DriverSettings.GetHost();
             int port = DriverSettings.GetPort();
 
-            Text = "ASTRO8-OnstepX 驱动设置";
+            Text = "ASTRO8-OnstepX 驱动设置 / Driver Setup";
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
             StartPosition = FormStartPosition.CenterParent;
-            ClientSize = new Size(560, 690);
+            ClientSize = new Size(720, 708);
 
-            // ===== 连接方式 =====
-            var connBox = new GroupBox { Text = "连接方式", Left = 10, Top = 8, Width = 540, Height = 130 };
-            _hidRadio = new RadioButton { Text = "HID（USB 转串口芯片）", Left = 15, Top = 22, Width = 170, Checked = mode != "WIFI" };
-            _wifiRadio = new RadioButton { Text = "WiFi（TCP）", Left = 200, Top = 22, Width = 140, Checked = mode == "WIFI" };
+            // ===== 连接方式 / Connection =====
+            var connBox = new GroupBox { Text = "连接方式 / Connection", Left = 10, Top = 8, Width = 700, Height = 130 };
+            _hidRadio = new RadioButton { Text = "HID（USB 转串口芯片 / USB-Serial chip）", Left = 15, Top = 22, Width = 300, Checked = mode != "WIFI" };
+            _wifiRadio = new RadioButton { Text = "WiFi（TCP）", Left = 330, Top = 22, Width = 150, Checked = mode == "WIFI" };
             _hidRadio.CheckedChanged += (s, e) => SyncPanels();
             _wifiRadio.CheckedChanged += (s, e) => SyncPanels();
 
-            _hidPanel = new Panel { Left = 10, Top = 45, Width = 520, Height = 80 };
-            var vLabel = new Label { Text = "VID", Left = 15, Top = 10, Width = 40 };
-            _vidBox = new TextBox { Left = 60, Top = 8, Width = 90, Text = vid.ToString("X4") };
-            var pLabel = new Label { Text = "PID", Left = 165, Top = 10, Width = 40 };
-            _pidBox = new TextBox { Left = 205, Top = 8, Width = 90, Text = pid.ToString("X4") };
-            var sLabel = new Label { Text = "序列号", Left = 315, Top = 10, Width = 50 };
-            _serialBox = new TextBox { Left = 370, Top = 8, Width = 140, Text = serial };
-            _deviceList = new ComboBox { Left = 15, Top = 40, Width = 385, DropDownStyle = ComboBoxStyle.DropDownList };
-            _scanBtn = new Button { Text = "扫描设备", Left = 412, Top = 38, Width = 98 };
+            _hidPanel = new Panel { Left = 10, Top = 44, Width = 680, Height = 84 };
+            var vLabel = new Label { Text = "VID", Left = 15, Top = 10, Width = 45 };
+            _vidBox = new TextBox { Left = 65, Top = 8, Width = 105, Text = vid.ToString("X4") };
+            var pLabel = new Label { Text = "PID", Left = 185, Top = 10, Width = 45 };
+            _pidBox = new TextBox { Left = 230, Top = 8, Width = 105, Text = pid.ToString("X4") };
+            var sLabel = new Label { Text = "序列号 / Serial", Left = 350, Top = 10, Width = 110 };
+            _serialBox = new TextBox { Left = 465, Top = 8, Width = 200, Text = serial };
+            _deviceList = new ComboBox { Left = 15, Top = 42, Width = 470, DropDownStyle = ComboBoxStyle.DropDownList };
+            _scanBtn = new Button { Text = "扫描设备 / Scan", Left = 495, Top = 40, Width = 170 };
             _scanBtn.Click += (s, e) => ScanDevices();
             _hidPanel.Controls.AddRange(new Control[] { vLabel, _vidBox, pLabel, _pidBox, sLabel, _serialBox, _deviceList, _scanBtn });
 
-            _wifiPanel = new Panel { Left = 10, Top = 45, Width = 520, Height = 80 };
-            var hLabel = new Label { Text = "地址", Left = 15, Top = 10, Width = 40 };
-            _hostBox = new TextBox { Left = 60, Top = 8, Width = 170, Text = host };
-            var ptLabel = new Label { Text = "端口", Left = 250, Top = 10, Width = 40 };
-            _portBox = new TextBox { Left = 295, Top = 8, Width = 80, Text = port.ToString() };
-            var wifiHint = new Label { Text = "OnStep WiFi 原始 TCP 转发；默认 192.168.0.1:9998（参考 ASCOM 串口驱动样式）", Left = 15, Top = 38, Width = 490, ForeColor = Color.Gray };
+            _wifiPanel = new Panel { Left = 10, Top = 44, Width = 680, Height = 84 };
+            var hLabel = new Label { Text = "地址 / Host", Left = 15, Top = 10, Width = 75 };
+            _hostBox = new TextBox { Left = 95, Top = 8, Width = 200, Text = host };
+            var ptLabel = new Label { Text = "端口 / Port", Left = 310, Top = 10, Width = 75 };
+            _portBox = new TextBox { Left = 390, Top = 8, Width = 90, Text = port.ToString() };
+            var wifiHint = new Label
+            {
+                Text = "OnStep WiFi 原始 TCP 转发；默认 192.168.0.1:9998。\r\nOnStep WiFi must forward raw TCP; default 192.168.0.1:9998.",
+                Left = 15, Top = 40, Width = 650, Height = 40, AutoSize = false, ForeColor = Color.Gray
+            };
             _wifiPanel.Controls.AddRange(new Control[] { hLabel, _hostBox, ptLabel, _portBox, wifiHint });
             connBox.Controls.AddRange(new Control[] { _hidRadio, _wifiRadio, _hidPanel, _wifiPanel });
 
-            // ===== 测试连接 =====
-            _testBtn = new Button { Text = "测试连接（握手 :GVP#）", Left = 10, Top = 148, Width = 220 };
+            // ===== 测试连接 / Test =====
+            _testBtn = new Button { Text = "测试连接（握手 :GVP#）/ Test Connection", Left = 10, Top = 146, Width = 300 };
             _testBtn.Click += (s, e) => TestConnection();
-            _resultLabel = new Label { Left = 245, Top = 146, Width = 305, Height = 80, AutoSize = false, ForeColor = Color.FromArgb(40, 60, 80) };
+            _resultLabel = new Label { Left = 320, Top = 144, Width = 390, Height = 86, AutoSize = false, ForeColor = Color.FromArgb(40, 60, 80) };
 
-            // ===== 站点与时间 =====
-            var siteBox = new GroupBox { Text = "站点与时间（默认回读硬件当前设置，可手动修改）", Left = 10, Top = 232, Width = 540, Height = 118 };
-            var lonLabel = new Label { Text = "经度 (°)", Left = 15, Top = 24, Width = 60 };
-            _lonBox = new TextBox { Left = 80, Top = 22, Width = 130 };
-            var latLabel = new Label { Text = "纬度 (°)", Left = 235, Top = 24, Width = 60 };
-            _latBox = new TextBox { Left = 300, Top = 22, Width = 130 };
-            var utcLabel = new Label { Text = "UTC offset", Left = 15, Top = 54, Width = 80 };
-            _utcBox = new TextBox { Left = 100, Top = 52, Width = 110 };
-            var timeLabel = new Label { Text = "本地时间", Left = 235, Top = 54, Width = 70 };
-            _timeBox = new TextBox { Left = 300, Top = 52, Width = 130 };
-            var dateLabel = new Label { Text = "本地日期", Left = 15, Top = 84, Width = 80 };
-            _dateBox = new TextBox { Left = 100, Top = 82, Width = 110 };
-            var siteHint = new Label { Text = "时间/日期格式 HH:MM:SS、MM/DD/YY（24 小时制）", Left = 235, Top = 84, Width = 300, ForeColor = Color.Gray };
+            // ===== 站点与时间 / Site & Time =====
+            var siteBox = new GroupBox
+            {
+                Text = "站点与时间 / Site & Time（默认回读硬件，可手动修改 / reads hardware, editable）",
+                Left = 10, Top = 242, Width = 700, Height = 138
+            };
+            var lonLabel = new Label { Text = "经度 / Longitude (°)", Left = 15, Top = 26, Width = 135 };
+            _lonBox = new TextBox { Left = 155, Top = 24, Width = 135 };
+            var latLabel = new Label { Text = "纬度 / Latitude (°)", Left = 310, Top = 26, Width = 130 };
+            _latBox = new TextBox { Left = 445, Top = 24, Width = 140 };
+            var utcLabel = new Label { Text = "UTC offset", Left = 15, Top = 58, Width = 100 };
+            _utcBox = new TextBox { Left = 120, Top = 56, Width = 110 };
+            var timeLabel = new Label { Text = "本地时间 / Local Time", Left = 260, Top = 58, Width = 140 };
+            _timeBox = new TextBox { Left = 405, Top = 56, Width = 130 };
+            var dateLabel = new Label { Text = "本地日期 / Local Date", Left = 15, Top = 90, Width = 135 };
+            _dateBox = new TextBox { Left = 155, Top = 88, Width = 110 };
+            var siteHint = new Label
+            {
+                Text = "时间 HH:MM:SS、日期 MM/DD/YY（24 小时制）。\r\nTime HH:MM:SS, date MM/DD/YY (24h).",
+                Left = 280, Top = 90, Width = 400, Height = 44, AutoSize = false, ForeColor = Color.Gray
+            };
             siteBox.Controls.AddRange(new Control[] { lonLabel, _lonBox, latLabel, _latBox, utcLabel, _utcBox, timeLabel, _timeBox, dateLabel, _dateBox, siteHint });
 
-            // ===== 限制 =====
-            var limBox = new GroupBox { Text = "限制", Left = 10, Top = 358, Width = 540, Height = 190 };
-            var gotoTitle = new Label { Text = "驱动侧 GOTO 软限制（超出范围拒绝 GOTO，可手动修改）", Left = 15, Top = 22, Width = 500, Font = new Font(Font, FontStyle.Bold), ForeColor = Color.FromArgb(60, 80, 100) };
-            var raMinLabel = new Label { Text = "RA 最小 (h)", Left = 30, Top = 44, Width = 80 };
-            _raMinBox = new TextBox { Left = 115, Top = 42, Width = 70 };
-            var raMaxLabel = new Label { Text = "RA 最大 (h)", Left = 215, Top = 44, Width = 80 };
-            _raMaxBox = new TextBox { Left = 300, Top = 42, Width = 70 };
-            var decMinLabel = new Label { Text = "Dec 最小 (°)", Left = 30, Top = 72, Width = 80 };
-            _decMinBox = new TextBox { Left = 115, Top = 70, Width = 70 };
-            var decMaxLabel = new Label { Text = "Dec 最大 (°)", Left = 215, Top = 72, Width = 80 };
-            _decMaxBox = new TextBox { Left = 300, Top = 70, Width = 70 };
-            var hwTitle = new Label { Text = "硬件限制（回读 / 写入 OnStep）", Left = 15, Top = 100, Width = 500, Font = new Font(Font, FontStyle.Bold), ForeColor = Color.FromArgb(60, 80, 100) };
-            var hzLabel = new Label { Text = "地平 (°)", Left = 30, Top = 124, Width = 60 };
-            _horizonBox = new TextBox { Left = 95, Top = 122, Width = 70 };
-            var ovLabel = new Label { Text = "天顶 (°)", Left = 195, Top = 124, Width = 60 };
-            _overheadBox = new TextBox { Left = 260, Top = 122, Width = 70 };
-            var esLabel = new Label { Text = "东子午线 (min)", Left = 355, Top = 124, Width = 100 };
-            _eastMerBox = new TextBox { Left = 455, Top = 122, Width = 70 };
-            var wsLabel = new Label { Text = "西子午线 (min)", Left = 30, Top = 152, Width = 100 };
-            _westMerBox = new TextBox { Left = 135, Top = 150, Width = 70 };
-            var limHint = new Label { Text = "GEM 赤道仪：东/西子午线限制即 RA 方向运动范围（分钟）；Dec 软限制默认回读 Axis2 限位。", Left = 215, Top = 152, Width = 320, ForeColor = Color.Gray };
+            // ===== 限制 / Limits =====
+            var limBox = new GroupBox { Text = "限制 / Limits", Left = 10, Top = 390, Width = 700, Height = 190 };
+            var gotoTitle = new Label
+            {
+                Text = "驱动侧 GOTO 软限制（超限拒绝 GOTO）/ Driver-side GOTO soft limits (reject outside range)",
+                Left = 15, Top = 18, Width = 670, Height = 20, AutoSize = false,
+                Font = new Font(Font, FontStyle.Bold), ForeColor = Color.FromArgb(60, 80, 100)
+            };
+            var raMinLabel = new Label { Text = "RA 最小/min(h)", Left = 30, Top = 42, Width = 120 };
+            _raMinBox = new TextBox { Left = 155, Top = 40, Width = 75 };
+            var raMaxLabel = new Label { Text = "RA 最大/max(h)", Left = 250, Top = 42, Width = 120 };
+            _raMaxBox = new TextBox { Left = 375, Top = 40, Width = 75 };
+            var decMinLabel = new Label { Text = "Dec 最小/min(°)", Left = 30, Top = 72, Width = 130 };
+            _decMinBox = new TextBox { Left = 165, Top = 70, Width = 75 };
+            var decMaxLabel = new Label { Text = "Dec 最大/max(°)", Left = 250, Top = 72, Width = 130 };
+            _decMaxBox = new TextBox { Left = 385, Top = 70, Width = 75 };
+            var hwTitle = new Label
+            {
+                Text = "硬件限制（回读 / 写入 OnStep）/ Hardware limits (read/write OnStep)",
+                Left = 15, Top = 102, Width = 670, Height = 20, AutoSize = false,
+                Font = new Font(Font, FontStyle.Bold), ForeColor = Color.FromArgb(60, 80, 100)
+            };
+            var hzLabel = new Label { Text = "地平/Horizon°", Left = 30, Top = 126, Width = 100 };
+            _horizonBox = new TextBox { Left = 133, Top = 124, Width = 75 };
+            var ovLabel = new Label { Text = "天顶/Overhead°", Left = 240, Top = 126, Width = 100 };
+            _overheadBox = new TextBox { Left = 343, Top = 124, Width = 75 };
+            var esLabel = new Label { Text = "东子午线/E.Mer(min)", Left = 455, Top = 126, Width = 140 };
+            _eastMerBox = new TextBox { Left = 598, Top = 124, Width = 75 };
+            var wsLabel = new Label { Text = "西子午线/W.Mer(min)", Left = 30, Top = 154, Width = 140 };
+            _westMerBox = new TextBox { Left = 173, Top = 152, Width = 75 };
+            var limHint = new Label
+            {
+                Text = "GEM: 东/西子午线=RA范围; Dec=Axis2 / E/W=RA range; Dec=Axis2",
+                Left = 255, Top = 154, Width = 435, Height = 20, AutoSize = false, ForeColor = Color.Gray
+            };
             limBox.Controls.AddRange(new Control[] { gotoTitle, raMinLabel, _raMinBox, raMaxLabel, _raMaxBox, decMinLabel, _decMinBox, decMaxLabel, _decMaxBox, hwTitle, hzLabel, _horizonBox, ovLabel, _overheadBox, esLabel, _eastMerBox, wsLabel, _westMerBox, limHint });
 
-            // ===== 速度 =====
-            var spdBox = new GroupBox { Text = "速度", Left = 10, Top = 556, Width = 540, Height = 86 };
-            var spdLabel = new Label { Text = "当前 GOTO 速度", Left = 15, Top = 24, Width = 110 };
-            _slewSpeedLabel = new Label { Left = 130, Top = 24, Width = 90, ForeColor = Color.Gray, Text = "(未回读)" };
-            var presetLabel = new Label { Text = "移动速率档", Left = 250, Top = 24, Width = 90 };
-            _slewPresetCombo = new ComboBox { Left = 345, Top = 22, Width = 130, DropDownStyle = ComboBoxStyle.DropDownList };
-            _slewPresetCombo.Items.AddRange(new object[] { "1x (导星)", "8x (居中)", "20x (寻星)", "48x (快速)", "半速", "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9" });
-            var trackLabel = new Label { Text = "跟踪速率", Left = 15, Top = 54, Width = 90 };
-            _trackRateCombo = new ComboBox { Left = 110, Top = 52, Width = 160, DropDownStyle = ComboBoxStyle.DropDownList };
+            // ===== 速度 / Speed =====
+            var spdBox = new GroupBox { Text = "速度 / Speed", Left = 10, Top = 606, Width = 700, Height = 76 };
+            var spdLabel = new Label { Text = "当前 GOTO 速度 / Current GOTO speed", Left = 15, Top = 22, Width = 220 };
+            _slewSpeedLabel = new Label { Left = 240, Top = 22, Width = 120, ForeColor = Color.Gray, Text = "(未回读 / not read)" };
+            var presetLabel = new Label { Text = "移动速率档 / Move rate", Left = 370, Top = 22, Width = 140 };
+            _slewPresetCombo = new ComboBox { Left = 515, Top = 20, Width = 170, DropDownStyle = ComboBoxStyle.DropDownList };
+            _slewPresetCombo.Items.AddRange(new object[] { "1x (导星/Guide)", "8x (居中/Center)", "20x (寻星/Find)", "48x (快速/Fast)", "半速/Half", "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9" });
+            var trackLabel = new Label { Text = "跟踪速率 / Tracking", Left = 15, Top = 50, Width = 130 };
+            _trackRateCombo = new ComboBox { Left = 150, Top = 48, Width = 220, DropDownStyle = ComboBoxStyle.DropDownList };
             _trackRateCombo.Items.AddRange(new object[] { "恒星 (Sidereal)", "月球 (Lunar)", "太阳 (Solar)", "King" });
             spdBox.Controls.AddRange(new Control[] { spdLabel, _slewSpeedLabel, presetLabel, _slewPresetCombo, trackLabel, _trackRateCombo });
 
-            // ===== 底部按钮 =====
-            _readBtn = new Button { Text = "回读硬件设置", Left = 10, Top = 650, Width = 170 };
+            // ===== 底部按钮 / Bottom buttons =====
+            _readBtn = new Button { Text = "回读硬件设置 / Read hardware", Left = 10, Top = 672, Width = 200 };
             _readBtn.Click += (s, e) => ReadHardwareSettings();
-            _okBtn = new Button { Text = "确定", Left = 340, Top = 650, Width = 80, DialogResult = DialogResult.OK };
-            _cancelBtn = new Button { Text = "取消", Left = 440, Top = 650, Width = 80, DialogResult = DialogResult.Cancel };
+            _okBtn = new Button { Text = "确定 / OK", Left = 500, Top = 672, Width = 90, DialogResult = DialogResult.OK };
+            _cancelBtn = new Button { Text = "取消 / Cancel", Left = 600, Top = 672, Width = 90, DialogResult = DialogResult.Cancel };
             _okBtn.Click += (s, e) => Save();
 
             Controls.AddRange(new Control[] { connBox, _testBtn, _resultLabel, siteBox, limBox, spdBox, _readBtn, _okBtn, _cancelBtn });
@@ -177,7 +203,7 @@ namespace OnStepAstro8
             _eastMerBox.Text = DriverSettings.GetInt(DriverSettings.KEastMeridianMin, -1).ToString();
             _westMerBox.Text = DriverSettings.GetInt(DriverSettings.KWestMeridianMin, -1).ToString();
 
-            string preset = DriverSettings.GetString(DriverSettings.KSlewRatePreset, "20x (寻星)");
+            string preset = DriverSettings.GetString(DriverSettings.KSlewRatePreset, "20x (寻星/Find)");
             int pi = _slewPresetCombo.Items.IndexOf(preset);
             _slewPresetCombo.SelectedIndex = pi >= 0 ? pi : 5; // 默认 R0
             string track = DriverSettings.GetString(DriverSettings.KTrackingRate, "恒星 (Sidereal)");
@@ -196,9 +222,10 @@ namespace OnStepAstro8
             _wifiPanel.Visible = _wifiRadio.Checked;
         }
 
-        /// <summary>按当前 VID/PID/序列号过滤系统 HID 设备，只有完全匹配的才进入下拉列表。</summary>
+        /// <summary>按当前 VID/PID/序列号过滤系统 HID 设备，只有完全匹配的才进入下拉列表；WiFi 模式下不扫描。</summary>
         private void ScanDevices()
         {
+            if (_wifiRadio.Checked) { _deviceList.Items.Clear(); return; }
             _deviceList.Items.Clear();
             int vid, pid;
             bool vidOk = TryParseHex(_vidBox.Text, out vid);
@@ -226,17 +253,18 @@ namespace OnStepAstro8
                 }
                 if (count == 0)
                 {
-                    _resultLabel.Text = "未找到 ASTRO8-OnstepX。请确认设备已连接，且 VID、PID、序列号 与设备实际值一致，然后点击“扫描设备”刷新重试。";
+                    _resultLabel.Text = "未找到 ASTRO8-OnstepX。请确认设备已连接，VID、PID、序列号与设备实际值一致，再点击“扫描设备”刷新。\r\n" +
+                                       "ASTRO8-OnstepX not found. Check the device is connected and VID/PID/serial match, then click “Scan” to refresh.";
                 }
                 else
                 {
-                    _resultLabel.Text = string.Format("找到 {0} 台匹配的 ASTRO8-OnstepX 设备。", count);
+                    _resultLabel.Text = string.Format("找到 {0} 台匹配的 ASTRO8-OnstepX 设备。\r\n{0} matching ASTRO8-OnstepX device(s) found.", count);
                 }
                 if (_deviceList.Items.Count > 0) _deviceList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                _resultLabel.Text = "扫描失败：" + ex.Message;
+                _resultLabel.Text = "扫描失败 / Scan failed: " + ex.Message;
             }
         }
 
@@ -247,9 +275,9 @@ namespace OnStepAstro8
             {
                 int port;
                 if (!int.TryParse(_portBox.Text.Trim(), out port) || port < 1 || port > 65535)
-                    throw new InvalidOperationException("端口无效（1-65535）。");
+                    throw new InvalidOperationException("端口无效（1-65535）/ Invalid port (1-65535).");
                 string host = _hostBox.Text.Trim();
-                if (host.Length == 0) throw new InvalidOperationException("WiFi 地址不能为空。");
+                if (host.Length == 0) throw new InvalidOperationException("WiFi 地址不能为空 / WiFi host must not be empty.");
                 var t = new WifiTransport(host, port);
                 t.Open();
                 return t;
@@ -258,7 +286,7 @@ namespace OnStepAstro8
             {
                 int vid, pid;
                 if (!TryParseHex(_vidBox.Text, out vid) || !TryParseHex(_pidBox.Text, out pid))
-                    throw new InvalidOperationException("VID/PID 格式错误（十六进制）。");
+                    throw new InvalidOperationException("VID/PID 格式错误（十六进制）/ Invalid VID/PID (hex).");
                 string expected = (_serialBox.Text ?? "").Trim();
                 var hid = new HidTransport();
                 try
@@ -273,7 +301,8 @@ namespace OnStepAstro8
                     {
                         hid.Dispose();
                         throw new InvalidOperationException(string.Format(
-                            "序列号验证失败：期望 {0}，实际 {1}。", expected, actual.Length == 0 ? "(空)" : actual));
+                            "序列号验证失败：期望 {0}，实际 {1}。 / Serial mismatch: expected {0}, actual {1}.",
+                            expected, actual.Length == 0 ? "(空 / empty)" : actual));
                     }
                 }
                 return hid;
@@ -292,12 +321,12 @@ namespace OnStepAstro8
                     string where = _wifiRadio.Checked
                         ? string.Format("WiFi {0}:{1}", _hostBox.Text.Trim(), _portBox.Text.Trim())
                         : "HID " + t.Description;
-                    _resultLabel.Text = "连接成功（" + where + "）" + Environment.NewLine + "固件：" + info;
+                    _resultLabel.Text = "连接成功（" + where + "）\r\n固件 / Firmware: " + info;
                 }
             }
             catch (Exception ex)
             {
-                _resultLabel.Text = "测试失败：" + ex.Message;
+                _resultLabel.Text = "测试失败 / Test failed: " + ex.Message;
             }
             finally
             {
@@ -341,7 +370,7 @@ namespace OnStepAstro8
                     SetIfOk(() => _decMinBox.Text = proto.GetAxis2MinLimitDeg().ToString(), ref ok, ref fail);
                     SetIfOk(() => _decMaxBox.Text = proto.GetAxis2MaxLimitDeg().ToString(), ref ok, ref fail);
                     string axis1Ref = "";
-                    try { axis1Ref = string.Format("Axis1(RA) 轴限位: min {0}° / max {1}h", proto.GetAxis1MinLimitDeg(), proto.GetAxis1MaxLimitHours().ToString("0.#", CultureInfo.InvariantCulture)); } catch { }
+                    try { axis1Ref = string.Format("Axis1(RA) 轴限位: min {0}° / max {1}h  |  Axis1(RA) limits: min {0}° / max {1}h", proto.GetAxis1MinLimitDeg(), proto.GetAxis1MaxLimitHours().ToString("0.#", CultureInfo.InvariantCulture)); } catch { }
 
                     // 速度
                     SetIfOk(() => _slewSpeedLabel.Text = proto.GetSlewSpeedDegPerSec().ToString("0.00", CultureInfo.InvariantCulture) + " deg/s", ref ok, ref fail);
@@ -352,15 +381,16 @@ namespace OnStepAstro8
                         _trackRateCombo.SelectedItem = s;
                     }, ref ok, ref fail);
 
-                    _resultLabel.Text = string.Format("回读完成：成功 {0} 项，失败 {1} 项。固件：{2}{3}{4}",
+                    _resultLabel.Text = string.Format("回读完成：成功 {0} 项，失败 {1} 项。固件 / Firmware: {2}\r\n" +
+                        "Read-back done: {0} OK, {1} failed. {3}{4}",
                         ok, fail, info,
-                        Environment.NewLine + "可修改后点“确定”保存（连接时自动下发到硬件）。",
+                        Environment.NewLine + "可修改后点“确定 / OK”保存（连接时自动下发）。 / Edit then click OK; applied on connect.",
                         axis1Ref.Length > 0 ? Environment.NewLine + axis1Ref : "");
                 }
             }
             catch (Exception ex)
             {
-                _resultLabel.Text = "回读失败：" + ex.Message;
+                _resultLabel.Text = "回读失败 / Read-back failed: " + ex.Message;
             }
             finally
             {
@@ -380,18 +410,18 @@ namespace OnStepAstro8
             string err = "";
             double lon, lat, raMin, raMax, decMin, decMax;
             int utcMin, horizon, overhead, east, west;
-            if (!TryParseD(_lonBox.Text, out lon)) err += "经度无效；";
-            if (!TryParseD(_latBox.Text, out lat)) err += "纬度无效；";
-            if (!TryParseUtcOffset(_utcBox.Text, out utcMin)) err += "UTC offset 无效（如 +08:00）；";
-            if (!TryParseD(_raMinBox.Text, out raMin) || raMin < 0 || raMin > 24) err += "RA 最小无效(0-24)；";
-            if (!TryParseD(_raMaxBox.Text, out raMax) || raMax < 0 || raMax > 24) err += "RA 最大无效(0-24)；";
-            if (!TryParseD(_decMinBox.Text, out decMin) || decMin < -90 || decMin > 90) err += "Dec 最小无效(-90..90)；";
-            if (!TryParseD(_decMaxBox.Text, out decMax) || decMax < -90 || decMax > 90) err += "Dec 最大无效(-90..90)；";
-            if (!int.TryParse(_horizonBox.Text, out horizon)) err += "地平限制无效；";
-            if (!int.TryParse(_overheadBox.Text, out overhead)) err += "天顶限制无效；";
-            if (!int.TryParse(_eastMerBox.Text, out east)) err += "东子午线无效；";
-            if (!int.TryParse(_westMerBox.Text, out west)) err += "西子午线无效；";
-            if (err.Length > 0) { _resultLabel.Text = "保存失败：" + err; return; }
+            if (!TryParseD(_lonBox.Text, out lon)) err += "经度无效 / invalid longitude; ";
+            if (!TryParseD(_latBox.Text, out lat)) err += "纬度无效 / invalid latitude; ";
+            if (!TryParseUtcOffset(_utcBox.Text, out utcMin)) err += "UTC offset 无效（如 +08:00）/ invalid (e.g. +08:00); ";
+            if (!TryParseD(_raMinBox.Text, out raMin) || raMin < 0 || raMin > 24) err += "RA 最小无效(0-24) / RA min invalid (0-24); ";
+            if (!TryParseD(_raMaxBox.Text, out raMax) || raMax < 0 || raMax > 24) err += "RA 最大无效(0-24) / RA max invalid (0-24); ";
+            if (!TryParseD(_decMinBox.Text, out decMin) || decMin < -90 || decMin > 90) err += "Dec 最小无效(-90..90) / Dec min invalid (-90..90); ";
+            if (!TryParseD(_decMaxBox.Text, out decMax) || decMax < -90 || decMax > 90) err += "Dec 最大无效(-90..90) / Dec max invalid (-90..90); ";
+            if (!int.TryParse(_horizonBox.Text, out horizon)) err += "地平限制无效 / invalid horizon; ";
+            if (!int.TryParse(_overheadBox.Text, out overhead)) err += "天顶限制无效 / invalid overhead; ";
+            if (!int.TryParse(_eastMerBox.Text, out east)) err += "东子午线无效 / invalid E.meridian; ";
+            if (!int.TryParse(_westMerBox.Text, out west)) err += "西子午线无效 / invalid W.meridian; ";
+            if (err.Length > 0) { _resultLabel.Text = "保存失败 / Save failed: " + err; return; }
 
             // 时间/日期（可留空 = 不改）
             bool timeDirty = _timeBox.Text.Trim() != _timeOriginal.Trim() && _timeBox.Text.Trim().Length > 0;
@@ -446,16 +476,19 @@ namespace OnStepAstro8
                             proto.SetLocalTime(ParseDate(_dateBox.Text.Trim(), new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second)));
                         }
                     }
-                    _resultLabel.Text = "设置已保存；时间/日期已写入硬件。连接驱动时其余设置会自动下发。";
+                    _resultLabel.Text = "设置已保存；时间/日期已写入硬件。连接驱动时其余设置自动下发。\r\n" +
+                                       "Saved; time/date written to hardware. Other settings are applied when the driver connects.";
                 }
                 catch (Exception ex)
                 {
-                    _resultLabel.Text = "设置已保存（未能连接硬件下发时间/日期：" + ex.Message + "）。驱动连接时会应用其余设置。";
+                    _resultLabel.Text = "设置已保存（未能连接硬件下发时间/日期：" + ex.Message + "）。驱动连接时会应用其余设置。\r\n" +
+                                       "Saved (could not write time/date: " + ex.Message + "). Other settings apply on connect.";
                 }
             }
             else
             {
-                _resultLabel.Text = "设置已保存。连接驱动时：经度/纬度/UTC offset/限制/速率 会自动下发到硬件。";
+                _resultLabel.Text = "设置已保存。连接驱动时：经度/纬度/UTC offset/限制/速率 自动下发到硬件。\r\n" +
+                                   "Saved. On connect: longitude/latitude/UTC offset/limits/rates are applied to the hardware.";
             }
         }
 

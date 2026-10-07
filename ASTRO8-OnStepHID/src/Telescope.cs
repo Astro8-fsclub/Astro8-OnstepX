@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using ASCOM;
 using ASCOM.DeviceInterface;
 
-namespace OnStepAstro8
+namespace ASTRO8_OnStepHID
 {
     /// <summary>
     /// OnStep 望远镜 ASCOM 驱动 —— HID（USB 转串口芯片）或 WiFi（TCP）连接 OnStep。

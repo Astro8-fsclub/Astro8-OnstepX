@@ -1,6 +1,6 @@
 using System;
 
-namespace OnStepAstro8
+namespace ASTRO8_OnStepHID
 {
     /// <summary>
     /// OnStep 物理传输层抽象：HID 转串口芯片（USB）与 TCP（WiFi）共用同一协议栈。

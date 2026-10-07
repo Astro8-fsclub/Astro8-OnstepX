@@ -1,4 +1,4 @@
-# OnStepAstro8 —— ASTRO8-OnstepX 望远镜 ASCOM 驱动（HID / WiFi 双连接）
+# ASTRO8-OnStepHID —— ASTRO8-OnstepX 望远镜 ASCOM 驱动（HID / WiFi 双连接）
 
 在 `OnStepHID`（仅 HID）基础上扩展的新版驱动：**保留原工程 OnStepHID 待测试**，
 本工程独立注册（ProgId 不同，可与旧版并存）。除原有 HID 连接外，新增
@@ -23,7 +23,7 @@ can be edited manually**; they are applied automatically on connect.
 
 ### 1. 与原版 OnStepHID 的区别
 
-| 项 | OnStepHID（旧，保留测试） | OnStepAstro8（新） |
+| 项 | OnStepHID（旧，保留测试） | ASTRO8-OnStepHID（新） |
 |---|---|---|
 | ProgId | `ASCOM.OnStepHID.Telescope` | `ASCOM.OnStepAstro8.Telescope` |
 | 连接方式 | 仅 HID | **HID + WiFi(TCP)** |
@@ -89,14 +89,14 @@ can be edited manually**; they are applied automatically on connect.
 
 ```bat
 :: 1) 编译（Release，net48）
-dotnet build OnStepAstro8.sln -c Release
+dotnet build ASTRO8-OnStepHID.sln -c Release
 
 :: 2) 注册（以管理员运行 RegisterDriver.bat，或手动）
-"%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe" /codebase "src\bin\Release\net48\OnStepAstro8.dll"
-"%WINDIR%\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe"     /codebase "src\bin\Release\net48\OnStepAstro8.dll"
+"%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe" /codebase "src\bin\Release\net48\ASTRO8-OnStepHID.dll"
+"%WINDIR%\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe"     /codebase "src\bin\Release\net48\ASTRO8-OnStepHID.dll"
 ```
 
-- 产物：`src\bin\Release\net48\OnStepAstro8.dll`
+- 产物：`src\bin\Release\net48\ASTRO8-OnStepHID.dll`
 - 注册表：`HKLM\SOFTWARE\ASCOM\Telescope Drivers\ASCOM.OnStepAstro8.Telescope`（含 32 位视图）
 - 卸载：RegAsm /unregister（两条）
 - 注：RA0000 警告为预期（HidSharp 无强命名，与旧版一致）
@@ -105,21 +105,21 @@ dotnet build OnStepAstro8.sln -c Release
 
 ```bat
 :: 工程目录：tester\bin\Release\net48\
-OnStepAstro8Tester list                          :: 列出 HID 设备
-OnStepAstro8Tester test 1A86 55D4 A8-0001       :: HID 打开 + 握手 :GVP#
-OnStepAstro8Tester cmd  1A86 55D4 :GX97#        :: HID 任意命令（当前 GOTO 速度）
-OnStepAstro8Tester wtest 192.168.0.1 9998       :: WiFi 连接 + 握手
-OnStepAstro8Tester wcmd  192.168.0.1 9998 :GVP# :: WiFi 任意命令
+ASTRO8_OnStepHIDTester list                          :: 列出 HID 设备
+ASTRO8_OnStepHIDTester test 1A86 55D4 A8-0001       :: HID 打开 + 握手 :GVP#
+ASTRO8_OnStepHIDTester cmd  1A86 55D4 :GX97#        :: HID 任意命令（当前 GOTO 速度）
+ASTRO8_OnStepHIDTester wtest 192.168.0.1 9998       :: WiFi 连接 + 握手
+ASTRO8_OnStepHIDTester wcmd  192.168.0.1 9998 :GVP# :: WiFi 任意命令
 ```
 
 ### 6. 工程结构
 
 ```
-OnStepAstro8/
-├── OnStepAstro8.sln
+ASTRO8-OnStepHID/
+├── ASTRO8-OnStepHID.sln
 ├── RegisterDriver.bat
 ├── src/
-│   ├── OnStepAstro8.csproj
+│   ├── ASTRO8-OnStepHID.csproj
 │   ├── ITransport.cs        # 传输抽象（Write/ReadUntilHash/Flush）
 │   ├── HidTransport.cs      # HID 传输（32 字节报表、首字节=长度；序列号校验）
 │   ├── WifiTransport.cs     # TCP 传输（默认 192.168.0.1:9998）
@@ -219,14 +219,14 @@ Open: ASCOM Chooser → pick **ASTRO8-OnstepX (HID/WiFi)** → **Setup**.
 
 ```bat
 :: 1) Build (Release, net48)
-dotnet build OnStepAstro8.sln -c Release
+dotnet build ASTRO8-OnStepHID.sln -c Release
 
 :: 2) Register (run RegisterDriver.bat as Administrator, or manually)
-"%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe" /codebase "src\bin\Release\net48\OnStepAstro8.dll"
-"%WINDIR%\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe"     /codebase "src\bin\Release\net48\OnStepAstro8.dll"
+"%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe" /codebase "src\bin\Release\net48\ASTRO8-OnStepHID.dll"
+"%WINDIR%\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe"     /codebase "src\bin\Release\net48\ASTRO8-OnStepHID.dll"
 ```
 
-- Output: `src\bin\Release\net48\OnStepAstro8.dll`
+- Output: `src\bin\Release\net48\ASTRO8-OnStepHID.dll`
 - Registry: `HKLM\SOFTWARE\ASCOM\Telescope Drivers\ASCOM.OnStepAstro8.Telescope` (plus the 32-bit view)
 - Uninstall: RegAsm /unregister (both)
 - Note: the RA0000 warning is expected (HidSharp is not strong-named, same as the old version)
@@ -235,21 +235,21 @@ dotnet build OnStepAstro8.sln -c Release
 
 ```bat
 :: tool dir: tester\bin\Release\net48\
-OnStepAstro8Tester list                          :: list HID devices
-OnStepAstro8Tester test 1A86 55D4 A8-0001       :: HID open + handshake :GVP#
-OnStepAstro8Tester cmd  1A86 55D4 :GX97#        :: HID arbitrary command (current GOTO speed)
-OnStepAstro8Tester wtest 192.168.0.1 9998       :: WiFi connect + handshake
-OnStepAstro8Tester wcmd  192.168.0.1 9998 :GVP# :: WiFi arbitrary command
+ASTRO8_OnStepHIDTester list                          :: list HID devices
+ASTRO8_OnStepHIDTester test 1A86 55D4 A8-0001       :: HID open + handshake :GVP#
+ASTRO8_OnStepHIDTester cmd  1A86 55D4 :GX97#        :: HID arbitrary command (current GOTO speed)
+ASTRO8_OnStepHIDTester wtest 192.168.0.1 9998       :: WiFi connect + handshake
+ASTRO8_OnStepHIDTester wcmd  192.168.0.1 9998 :GVP# :: WiFi arbitrary command
 ```
 
 ### 6. Project layout
 
 ```
-OnStepAstro8/
-├── OnStepAstro8.sln
+ASTRO8-OnStepHID/
+├── ASTRO8-OnStepHID.sln
 ├── RegisterDriver.bat
 ├── src/
-│   ├── OnStepAstro8.csproj
+│   ├── ASTRO8-OnStepHID.csproj
 │   ├── ITransport.cs        # transport abstraction (Write/ReadUntilHash/Flush)
 │   ├── HidTransport.cs      # HID transport (32-byte report, first byte = length; serial check)
 │   ├── WifiTransport.cs     # TCP transport (default 192.168.0.1:9998)

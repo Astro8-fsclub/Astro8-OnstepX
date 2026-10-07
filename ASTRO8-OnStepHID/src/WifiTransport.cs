@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace OnStepAstro8
+namespace ASTRO8_OnStepHID
 {
     /// <summary>
     /// OnStep WiFi（原始 TCP）传输层。

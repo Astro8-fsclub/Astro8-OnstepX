@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Win32;
 
-namespace OnStepAstro8
+namespace ASTRO8_OnStepHID
 {
     /// <summary>
     /// 驱动设置存储 + ASCOM Chooser 注册。

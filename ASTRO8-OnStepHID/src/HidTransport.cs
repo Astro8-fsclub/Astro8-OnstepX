@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using HidSharp;
 
-namespace OnStepAstro8
+namespace ASTRO8_OnStepHID
 {
     /// <summary>
     /// HID 转串口芯片的 USB 传输层。

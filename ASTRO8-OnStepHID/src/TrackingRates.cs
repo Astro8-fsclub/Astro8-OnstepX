@@ -3,7 +3,7 @@ using System.Collections;
 using System.Runtime.InteropServices;
 using ASCOM.DeviceInterface;
 
-namespace OnStepAstro8
+namespace ASTRO8_OnStepHID
 {
     /// <summary>TrackingRates 集合：恒星/太阴/太阳/King 四种。</summary>
     [ComVisible(false)]

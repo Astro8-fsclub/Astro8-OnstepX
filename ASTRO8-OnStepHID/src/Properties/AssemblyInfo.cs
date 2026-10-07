@@ -1,11 +1,11 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("OnStepAstro8")]
+[assembly: AssemblyTitle("ASTRO8-OnStepHID")]
 [assembly: AssemblyDescription("OnStep 望远镜 ASCOM 驱动（经 HID 转串口芯片连接 USB，替代串口）")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OnStepAstro8")]
+[assembly: AssemblyProduct("ASTRO8-OnStepHID")]
 [assembly: AssemblyCopyright("GPL-3.0")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

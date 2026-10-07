@@ -2,9 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnStepAstro8", "src\OnStepAstro8.csproj", "{8B4F4A1E-2C7D-4B3A-9E6F-1D0A5C9B2E41}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASTRO8-OnStepHID", "src\ASTRO8-OnStepHID.csproj", "{8B4F4A1E-2C7D-4B3A-9E6F-1D0A5C9B2E41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnStepAstro8Tester", "tester\OnStepAstro8Tester.csproj", "{3D5C6B2F-9A1E-4C8D-B7F2-6E0A4D8C1B53}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASTRO8-OnStepHIDTester", "tester\ASTRO8-OnStepHIDTester.csproj", "{3D5C6B2F-9A1E-4C8D-B7F2-6E0A4D8C1B53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

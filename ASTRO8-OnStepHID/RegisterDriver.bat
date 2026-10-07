@@ -2,11 +2,11 @@
 setlocal
 cd /d "%~dp0"
 
-set "DLL=src\bin\Release\net48\OnStepAstro8.dll"
+set "DLL=src\bin\Release\net48\ASTRO8-OnStepHID.dll"
 if exist "%DLL%" goto :FOUND
-set "DLL=src\bin\Debug\net48\OnStepAstro8.dll"
+set "DLL=src\bin\Debug\net48\ASTRO8-OnStepHID.dll"
 if exist "%DLL%" goto :FOUND
-echo [ERROR] OnStepAstro8.dll not found. Build it first:
+echo [ERROR] ASTRO8-OnStepHID.dll not found. Build it first:
 echo   dotnet build -c Release
 echo   (or build Release in Visual Studio)
 pause

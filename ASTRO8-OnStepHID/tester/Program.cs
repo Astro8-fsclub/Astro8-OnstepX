@@ -1,16 +1,16 @@
 using System;
-using OnStepAstro8;
+using ASTRO8_OnStepHID;
 
-namespace OnStepAstro8Tester
+namespace ASTRO8_OnStepHIDTester
 {
     /// <summary>
     /// HID 转串口 / WiFi + OnStep 硬件联调小工具（无需安装 ASCOM 即可先验证接线与协议）。
     /// 用法：
-    ///   OnStepAstro8Tester list                             列出系统中的 HID 设备
-    ///   OnStepAstro8Tester test <VID> <PID> [期望序列号]     打开 HID 设备并做 OnStep 握手（:GVP# / :GVM#）
-    ///   OnStepAstro8Tester cmd <VID> <PID> <命令>            发送任意 OnStep 命令并打印应答
-    ///   OnStepAstro8Tester wtest <地址> <端口>               WiFi 连接并做 OnStep 握手
-    ///   OnStepAstro8Tester wcmd <地址> <端口> <命令>         WiFi 发送任意 OnStep 命令并打印应答
+    ///   ASTRO8_OnStepHIDTester list                             列出系统中的 HID 设备
+    ///   ASTRO8_OnStepHIDTester test <VID> <PID> [期望序列号]     打开 HID 设备并做 OnStep 握手（:GVP# / :GVM#）
+    ///   ASTRO8_OnStepHIDTester cmd <VID> <PID> <命令>            发送任意 OnStep 命令并打印应答
+    ///   ASTRO8_OnStepHIDTester wtest <地址> <端口>               WiFi 连接并做 OnStep 握手
+    ///   ASTRO8_OnStepHIDTester wcmd <地址> <端口> <命令>         WiFi 发送任意 OnStep 命令并打印应答
     /// VID/PID 为十六进制，如 1A86 55D4；WiFi 默认 192.168.0.1 9998
     /// </summary>
     public static class Program
@@ -140,16 +140,16 @@ namespace OnStepAstro8Tester
         private static void Usage()
         {
             Console.WriteLine("用法：");
-            Console.WriteLine("  OnStepAstro8Tester list");
-            Console.WriteLine("  OnStepAstro8Tester test <VID> <PID> [期望序列号]");
-            Console.WriteLine("  OnStepAstro8Tester cmd <VID> <PID> <命令>");
-            Console.WriteLine("  OnStepAstro8Tester wtest <地址> <端口>");
-            Console.WriteLine("  OnStepAstro8Tester wcmd <地址> <端口> <命令>");
+            Console.WriteLine("  ASTRO8_OnStepHIDTester list");
+            Console.WriteLine("  ASTRO8_OnStepHIDTester test <VID> <PID> [期望序列号]");
+            Console.WriteLine("  ASTRO8_OnStepHIDTester cmd <VID> <PID> <命令>");
+            Console.WriteLine("  ASTRO8_OnStepHIDTester wtest <地址> <端口>");
+            Console.WriteLine("  ASTRO8_OnStepHIDTester wcmd <地址> <端口> <命令>");
             Console.WriteLine("示例：");
-            Console.WriteLine("  OnStepAstro8Tester test 1A86 55D4 A8-0001");
-            Console.WriteLine("  OnStepAstro8Tester cmd 1A86 55D4 :GVP#");
-            Console.WriteLine("  OnStepAstro8Tester wtest 192.168.0.1 9998");
-            Console.WriteLine("  OnStepAstro8Tester wcmd 192.168.0.1 9998 :GVP#");
+            Console.WriteLine("  ASTRO8_OnStepHIDTester test 1A86 55D4 A8-0001");
+            Console.WriteLine("  ASTRO8_OnStepHIDTester cmd 1A86 55D4 :GVP#");
+            Console.WriteLine("  ASTRO8_OnStepHIDTester wtest 192.168.0.1 9998");
+            Console.WriteLine("  ASTRO8_OnStepHIDTester wcmd 192.168.0.1 9998 :GVP#");
         }
     }
 }
