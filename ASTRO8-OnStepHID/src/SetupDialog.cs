@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Globalization;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ASCOM.DeviceInterface;
@@ -64,6 +65,14 @@ namespace ASTRO8_OnStepHID
             _wifiRadio = new RadioButton { Text = "WiFi（TCP）", Left = 380, Top = 20, Width = 200, Checked = mode == "WIFI" };
             _hidRadio.CheckedChanged += (s, e) => SyncPanels();
             _wifiRadio.CheckedChanged += (s, e) => SyncPanels();
+
+            // 徽标：OnStep 字标 + ASCOM 徽标（嵌入资源；加载失败时静默跳过，不影响布局）
+            var onstepLogo = MakeLogo("ASTRO8_OnStepHID.Resources.onstep_logo.png", "OnStep");
+            var ascomLogo = MakeLogo("ASTRO8_OnStepHID.Resources.ascom_logo.png", "ASCOM");
+            if (onstepLogo != null) { onstepLogo.Location = new Point(585, 16); onstepLogo.Size = new Size(90, 34); }
+            if (ascomLogo != null) { ascomLogo.Location = new Point(685, 16); ascomLogo.Size = new Size(90, 34); }
+            if (onstepLogo != null || ascomLogo != null)
+                connBox.Controls.AddRange(new Control[] { onstepLogo, ascomLogo });
 
             _hidPanel = new Panel { Left = 10, Top = 44, Width = 760, Height = 78 };
             var vLabel = new Label { Text = "VID", Left = 15, Top = 6, Width = 45 };
@@ -167,6 +176,24 @@ namespace ASTRO8_OnStepHID
             LoadInitialValues();
             SyncPanels();
             ScanDevices();
+        }
+
+        /// <summary>从嵌入资源加载徽标图片；失败返回 null（不阻塞对话框）。</summary>
+        private static PictureBox MakeLogo(string resourceName, string tooltip)
+        {
+            try
+            {
+                using (var s = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+                {
+                    if (s == null) return null;
+                    var img = Image.FromStream(s);
+                    var pb = new PictureBox { Image = img, SizeMode = PictureBoxSizeMode.Zoom, BackColor = Color.Transparent };
+                    var tip = new ToolTip();
+                    tip.SetToolTip(pb, tooltip);
+                    return pb;
+                }
+            }
+            catch { return null; }
         }
 
         /// <summary>从 Profile 载入上次保存值；无记录时给合理默认（UTC offset 用本机时区）。</summary>

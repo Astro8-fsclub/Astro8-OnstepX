@@ -14,6 +14,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\ascom_logo.png" />
+    <EmbeddedResource Include="Resources\onstep_logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- ASCOM 7 设备接口（net472 目标，兼容 ASCOM Platform 6.x 与 7.x 的 COM 客户端） -->
     <PackageReference Include="ASCOM.DeviceInterfaces" Version="7.1.2" />
     <!-- ASCOM 异常类型（PropertyNotImplementedException 等） -->
