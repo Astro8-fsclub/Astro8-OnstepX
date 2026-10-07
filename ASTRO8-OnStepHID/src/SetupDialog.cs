@@ -49,7 +49,9 @@ namespace ASTRO8_OnStepHID
             int port = DriverSettings.GetPort();
 
             Text = "ASTRO8-OnstepX 驱动设置 / Driver Setup";
-            Font = new Font("Microsoft Sans Serif", 8.25F);
+            // 绝对像素布局：禁用 DPI 自动缩放，字号用像素单位，任何显示缩放下窗体都是 800×712、文字 11px，所见即所得。
+            AutoScaleMode = AutoScaleMode.None;
+            Font = new Font("Microsoft Sans Serif", 11F, GraphicsUnit.Pixel);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
@@ -70,8 +72,8 @@ namespace ASTRO8_OnStepHID
             _pidBox = new TextBox { Left = 230, Top = 4, Width = 100, Text = pid.ToString("X4") };
             var sLabel = new Label { Text = "序列号\nSerial", Left = 345, Top = 4, Width = 110, Height = 28, AutoSize = false };
             _serialBox = new TextBox { Left = 460, Top = 6, Width = 285, Text = serial };
-            _deviceList = new ComboBox { Left = 15, Top = 38, Width = 580, DropDownStyle = ComboBoxStyle.DropDownList };
-            _scanBtn = new Button { Text = "扫描设备\nScan", Left = 605, Top = 36, Width = 145, Height = 30 };
+            _deviceList = new ComboBox { Left = 15, Top = 38, Width = 575, DropDownStyle = ComboBoxStyle.DropDownList };
+            _scanBtn = new Button { Text = "扫描设备\nScan", Left = 600, Top = 34, Width = 150, Height = 38 };
             _scanBtn.Click += (s, e) => ScanDevices();
             _hidPanel.Controls.AddRange(new Control[] { vLabel, _vidBox, pLabel, _pidBox, sLabel, _serialBox, _deviceList, _scanBtn });
 
@@ -140,7 +142,7 @@ namespace ASTRO8_OnStepHID
             limBox.Controls.AddRange(new Control[] { hwTitle, hzLabel, _horizonBox, ovLabel, _overheadBox, esLabel, _eastMerBox, wsLabel, _westMerBox, limHint });
 
             // ===== 速度 / Speed =====
-            var spdBox = new GroupBox { Text = "速度 / Speed", Left = 10, Top = 576, Width = 780, Height = 72 };
+            var spdBox = new GroupBox { Text = "速度 / Speed", Left = 10, Top = 576, Width = 780, Height = 76 };
             var spdLabel = new Label { Text = "当前 GOTO 速度\nCurrent speed", Left = 15, Top = 10, Width = 150, Height = 30, AutoSize = false };
             _slewSpeedLabel = new Label { Left = 170, Top = 10, Width = 120, Height = 30, AutoSize = false, ForeColor = Color.Gray, Text = "(未回读)\n(not read)" };
             var presetLabel = new Label { Text = "移动速率档\nMove rate", Left = 320, Top = 10, Width = 120, Height = 30, AutoSize = false };
@@ -235,8 +237,8 @@ namespace ASTRO8_OnStepHID
                 }
                 if (count == 0)
                 {
-                    _resultLabel.Text = "未找到 ASTRO8-OnstepX。请确认设备已连接，VID、PID、序列号与设备实际值一致，再点击“扫描设备”刷新。\r\n" +
-                                       "ASTRO8-OnstepX not found. Check the device is connected and VID/PID/serial match, then click “Scan” to refresh.";
+                    _resultLabel.Text = "未找到匹配设备。连接时将使用上方手填的 VID/PID/序列号；序列号留空或填 * 可跳过验证直接连接。请确认设备已连接后点击“扫描设备”刷新。\r\n" +
+                                       "No matching device. Connection uses the VID/PID/Serial typed above; leave serial empty (or use *) to skip verification and connect anyway. Click “Scan” to refresh.";
                 }
                 else
                 {
