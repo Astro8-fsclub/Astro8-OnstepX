@@ -1756,7 +1756,7 @@ public class SetupDialogForm : Form
 		base.Name = "SetupDialogForm";
 		base.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 		base.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-		this.Text = "OnStep Telescope Setup";
+		this.Text = "ASTRO8-OnstepHIDascom Setup";
 		base.FormClosing += new System.Windows.Forms.FormClosingEventHandler(SetupDialogForm_FormClosing);
 		base.Shown += new System.EventHandler(SetupDialogForm_Shown);
 		((System.ComponentModel.ISupportInitialize)this.picASCOM).EndInit();

@@ -12,7 +12,7 @@ namespace ASCOM.OnStep;
 
 [Guid("1829364f-690b-4138-b455-17d891d19bea")]
 [ProgId("ASCOM.Astro8OnstepHIDascom.Telescope")]
-[ServedClassName("OnStep Telescope")]
+[ServedClassName("ASTRO8-OnstepHIDascom Telescope")]
 [ClassInterface(ClassInterfaceType.None)]
 public class Telescope : ITelescopeV3
 {
