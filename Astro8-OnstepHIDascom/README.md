@@ -62,12 +62,12 @@ dotnet build ASCOM.OnStep.Telescope.csproj -c Release
 %WINDIR%\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe Astro8-OnstepHIDascom.Telescope.dll /codebase
 ```
 
-注册后 ASCOM Chooser 中将出现 **ASTRO8-OnstepX (HID/WiFi)**（ProgId：`ASCOM.Astro8OnstepHIDascom.Telescope`）。
+注册后 ASCOM Chooser 中将出现 **ASTRO8-OnstepHIDascom (HID/WiFi)**（ProgId：`ASCOM.Astro8OnstepHIDascom.Telescope`）。
 
 ## 使用 / Usage
 
 1. 将 `Rp2040HID.uf2` 刷入 RP2040（Pico），USB 连接电脑。
-2. 在 N.I.N.A. / 任意 ASCOM 客户端中选择望远镜 **ASTRO8-OnstepX (HID/WiFi)**。
+2. 在 N.I.N.A. / 任意 ASCOM 客户端中选择望远镜 **ASTRO8-OnstepHIDascom (HID/WiFi)**。
 3. 属性页中连接方式选 **HID Device**，确认 VID `1A86`、PID `55D4`、SN `A8-0001`（可改），点击测试/连接。
 4. 也可选 **IP Address** 走 WiFi TCP（默认 `192.168.0.1:9999`）或选择物理 **COM 口**。
 

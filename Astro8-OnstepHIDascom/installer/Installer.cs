@@ -10,7 +10,7 @@ using Microsoft.Win32;
 internal static class Installer
 {
     private const string ProgId = "ASCOM.Astro8OnstepHIDascom.Telescope";
-    private const string DisplayName = "ASTRO8-OnstepX (HID/WiFi)";
+    private const string DisplayName = "ASTRO8-OnstepHIDascom (HID/WiFi)";
     private const string AppDirName = "Astro8-OnstepHIDascom";
 
     private static int Main(string[] args)
