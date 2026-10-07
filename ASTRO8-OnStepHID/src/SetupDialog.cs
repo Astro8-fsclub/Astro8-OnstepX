@@ -66,14 +66,6 @@ namespace ASTRO8_OnStepHID
             _hidRadio.CheckedChanged += (s, e) => SyncPanels();
             _wifiRadio.CheckedChanged += (s, e) => SyncPanels();
 
-            // 徽标：OnStep 字标 + ASCOM 徽标（嵌入资源；加载失败时静默跳过，不影响布局）
-            var onstepLogo = MakeLogo("ASTRO8_OnStepHID.Resources.onstep_logo.png", "OnStep");
-            var ascomLogo = MakeLogo("ASTRO8_OnStepHID.Resources.ascom_logo.png", "ASCOM");
-            if (onstepLogo != null) { onstepLogo.Location = new Point(585, 16); onstepLogo.Size = new Size(90, 34); }
-            if (ascomLogo != null) { ascomLogo.Location = new Point(685, 16); ascomLogo.Size = new Size(90, 34); }
-            if (onstepLogo != null || ascomLogo != null)
-                connBox.Controls.AddRange(new Control[] { onstepLogo, ascomLogo });
-
             _hidPanel = new Panel { Left = 10, Top = 44, Width = 760, Height = 78 };
             var vLabel = new Label { Text = "VID", Left = 15, Top = 6, Width = 45 };
             _vidBox = new TextBox { Left = 65, Top = 4, Width = 100, Text = vid.ToString("X4") };
@@ -176,6 +168,17 @@ namespace ASTRO8_OnStepHID
             LoadInitialValues();
             SyncPanels();
             ScanDevices();
+
+            // ===== 徽标 / Logos（最后加入连接框，置于连接面板之上，且不与面板/控件重叠）=====
+            // OnStep：官方 OnStep ASCOM 驱动属性页原生 logo（蓝齿轮 + OnStep 字标，180x54）
+            // ASCOM：官方 OnStep ASCOM 驱动所用 ASCOM 官方标识（48x56，深蓝底 + 星形 + ASCOM）
+            // 均提取自官方 ASCOM.OnStep.Telescope.dll 嵌入资源；加载失败时静默跳过，不影响布局。
+            var onstepLogo = MakeLogo("ASTRO8_OnStepHID.Resources.onstep_logo.png", "OnStep");
+            var ascomLogo = MakeLogo("ASTRO8_OnStepHID.Resources.ascom_logo.png", "ASCOM");
+            if (onstepLogo != null) { onstepLogo.Location = new Point(585, 8); onstepLogo.Size = new Size(99, 30); }
+            if (ascomLogo != null) { ascomLogo.Location = new Point(694, 6); ascomLogo.Size = new Size(32, 38); }
+            if (onstepLogo != null || ascomLogo != null)
+                connBox.Controls.AddRange(new Control[] { onstepLogo, ascomLogo });
         }
 
         /// <summary>从嵌入资源加载徽标图片；失败返回 null（不阻塞对话框）。</summary>
@@ -186,11 +189,15 @@ namespace ASTRO8_OnStepHID
                 using (var s = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
                 {
                     if (s == null) return null;
-                    var img = Image.FromStream(s);
-                    var pb = new PictureBox { Image = img, SizeMode = PictureBoxSizeMode.Zoom, BackColor = Color.Transparent };
-                    var tip = new ToolTip();
-                    tip.SetToolTip(pb, tooltip);
-                    return pb;
+                    using (var img = Image.FromStream(s))
+                    {
+                        // 深拷贝：Image.FromStream 依赖底层流，流释放后位图可能失效，
+                        // new Bitmap(img) 生成独立副本，保证绘制正常。
+                        var pb = new PictureBox { Image = new Bitmap(img), SizeMode = PictureBoxSizeMode.Zoom, BackColor = Color.Transparent };
+                        var tip = new ToolTip();
+                        tip.SetToolTip(pb, tooltip);
+                        return pb;
+                    }
                 }
             }
             catch { return null; }
