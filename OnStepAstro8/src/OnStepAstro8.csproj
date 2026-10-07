@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <OutputType>Library</OutputType>
+    <AssemblyName>OnStepAstro8</AssemblyName>
+    <RootNamespace>OnStepAstro8</RootNamespace>
+    <LangVersion>7.3</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- ASCOM 7 设备接口（net472 目标，兼容 ASCOM Platform 6.x 与 7.x 的 COM 客户端） -->
+    <PackageReference Include="ASCOM.DeviceInterfaces" Version="7.1.2" />
+    <!-- ASCOM 异常类型（PropertyNotImplementedException 等） -->
+    <PackageReference Include="ASCOM.Exception.Library" Version="7.1.2" />
+    <!-- HID 通信库 -->
+    <PackageReference Include="HidSharp" Version="2.1.0" />
+    <!-- 无 VS 环境时用 dotnet 命令行编译 net48 需要的目标包 -->
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,13 @@
+# .NET build output
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# RP2040 cmake build directory (regenerate with: see Rp2040HID/README.md)
+Rp2040HID/build/
+
+# Windows
+Thumbs.db
+Desktop.ini
