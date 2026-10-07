@@ -333,13 +333,13 @@ namespace ASTRO8_OnStepHID
                     var proto = new OnStepProtocol(t);
                     string info = proto.Handshake();
 
-                    // 站点与时间
+                    // 站点与时间（本地日期时间用 OnStep 标准 :GL#/:GC# 回读，兼容 10.28q 固件）
                     SetIfOk(() => _lonBox.Text = proto.GetLongitude().ToString("0.0###", CultureInfo.InvariantCulture), ref ok, ref fail);
                     SetIfOk(() => _latBox.Text = proto.GetLatitude().ToString("0.0###", CultureInfo.InvariantCulture), ref ok, ref fail);
                     SetIfOk(() => _utcBox.Text = FormatUtcOffset((int)proto.GetUtcOffset().TotalMinutes), ref ok, ref fail);
                     SetIfOk(() =>
                     {
-                        DateTime local = proto.GetUt1().Add(proto.GetUtcOffset());
+                        DateTime local = proto.GetLocalDateTime();
                         _timeBox.Text = local.ToString("HH:mm:ss");
                         _dateBox.Text = local.ToString("MM/dd/yy");
                     }, ref ok, ref fail);

@@ -336,6 +336,29 @@ namespace ASTRO8_OnStepHID
             throw new InvalidOperationException("无法解析本地时间：" + t);
         }
 
+        /// <summary>回读本地日期（:GC#，MM/DD/YY）。失败抛异常。</summary>
+        public DateTime GetLocalDate()
+        {
+            string d = Command(":GC#");   // MM/DD/YY
+            DateTime dt;
+            if (DateTime.TryParseExact(d, "MM/dd/yy", CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out dt))
+                return dt;
+            throw new InvalidOperationException("无法解析本地日期：" + d);
+        }
+
+        /// <summary>回读本地日期时间 = 本地时间 :GL# + 本地日期 :GC#（OnStep 标准命令）。</summary>
+        public DateTime GetLocalDateTime()
+        {
+            string t = Command(":GL#");   // HH:MM:SS
+            string d = Command(":GC#");   // MM/DD/YY
+            DateTime dt;
+            if (DateTime.TryParseExact(t + " " + d, "HH:mm:ss MM/dd/yy", CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out dt))
+                return dt;
+            throw new InvalidOperationException("无法解析本地日期时间：" + t + " / " + d);
+        }
+
         /// <summary>回读 UTC offset（:GG#，返回 "sHH:MM"），即加到此值可得 UT1。</summary>
         public TimeSpan GetUtcOffset()
         {

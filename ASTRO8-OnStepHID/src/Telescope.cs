@@ -17,7 +17,7 @@ namespace ASTRO8_OnStepHID
     [Guid("74EDFF70-B739-4A59-9842-0DD94C305018")]
     [ProgId(DriverSettings.ProgId)]
     [ClassInterface(ClassInterfaceType.None)]
-    public class Telescope : ITelescopeV3, ITelescopeV4, IDisposable
+    public class Telescope : ITelescopeV3, ITelescopeV4, System.Collections.IEnumerable, IDisposable
     {
         private readonly object _state = new object();
 
@@ -33,6 +33,10 @@ namespace ASTRO8_OnStepHID
         private double _latCache, _lonCache, _elevCache;
 
         public Telescope() { }
+
+        // ASCOM 官方模板驱动（ReferenceImplementation）提供空枚举，客户端/Chooser 枚举驱动时
+        // 需要 QI(IEnumerable)；空实现即可满足兼容。
+        public System.Collections.IEnumerator GetEnumerator() { return new object[0].GetEnumerator(); }
 
         // ================= ASCOM 基础 =================
 
