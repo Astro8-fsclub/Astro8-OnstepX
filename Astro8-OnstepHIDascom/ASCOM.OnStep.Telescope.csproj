@@ -12,6 +12,7 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <Deterministic>false</Deterministic>
   </PropertyGroup>
 
   <PropertyGroup>

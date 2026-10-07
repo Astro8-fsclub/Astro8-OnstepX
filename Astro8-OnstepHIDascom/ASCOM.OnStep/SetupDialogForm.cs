@@ -239,8 +239,8 @@ public class SetupDialogForm : Form
 		label16.Visible = false;
 		TimeoutTrackBar.Value = Telescope.readTimeout * 100;
 		Version version = Assembly.GetExecutingAssembly().GetName().Version;
-		string text = string.Format(CultureInfo.InvariantCulture, "{0}.{1}", version.Major, version.Minor);
-		DriverVersion.Text = text;
+		string text = string.Format(CultureInfo.InvariantCulture, "v{0}.{1}", version.Major, version.Minor);
+		DriverVersion.Text = text + Environment.NewLine + "Built: " + GetBuildDateTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
 		blockConnections = false;
 		if (comboBoxComPort.Items.Contains(Telescope.comPort))
 		{
@@ -249,6 +249,27 @@ public class SetupDialogForm : Form
 		if (Telescope.comPort != null && Telescope.comPort.StartsWith("HID:", StringComparison.OrdinalIgnoreCase))
 		{
 			comboBoxComPort.SelectedItem = "HID Device";
+		}
+	}
+
+	private static DateTime GetBuildDateTime()
+	{
+		try
+		{
+			string path = Assembly.GetExecutingAssembly().Location;
+			using (System.IO.FileStream fs = System.IO.File.OpenRead(path))
+			using (System.IO.BinaryReader br = new System.IO.BinaryReader(fs))
+			{
+				fs.Position = 0x3C;
+				int peOffset = br.ReadInt32();
+				fs.Position = peOffset + 8;
+				uint timestamp = br.ReadUInt32();
+				return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(timestamp).ToLocalTime();
+			}
+		}
+		catch
+		{
+			return System.IO.File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location);
 		}
 	}
 
