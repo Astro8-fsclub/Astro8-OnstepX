@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <AssemblyName>Astro8-OnstepHIDascom.Telescope</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <UseWindowsForms>True</UseWindowsForms>
+    <TargetFramework>net48</TargetFramework>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>12.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <RootNamespace>ASCOM.OnStep</RootNamespace>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Exclude the official standalone COM-server files (kept for reference only) -->
+    <Compile Remove="ASCOM.OnStep\Server.cs" />
+    <Compile Remove="ASCOM.OnStep\ClassFactory.cs" />
+    <Compile Remove="ASCOM.OnStep\IClassFactory.cs" />
+    <Compile Remove="ASCOM.OnStep\ReferenceCountedObjectBase.cs" />
+    <Compile Remove="ASCOM.OnStep\frmMain.cs" />
+    <Compile Remove="ASCOM.OnStep\GarbageCollection.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ASCOM.OnStep.SetupDialogForm.resx">
+      <LogicalName>ASCOM.OnStep.SetupDialogForm.resources</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ASCOM.OnStep.Properties.Resources.resx">
+      <LogicalName>ASCOM.OnStep.Properties.Resources.resources</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- ASCOM platform libraries (NuGet; net48 compatible) -->
+    <PackageReference Include="ASCOM.DeviceInterfaces" Version="7.1.2" />
+    <PackageReference Include="ASCOM.Platform" Version="6.5.2" />
+    <PackageReference Include="ASCOM.Exception.Library" Version="7.1.2" />
+    <PackageReference Include="System.Resources.Extensions" Version="4.7.2" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>
